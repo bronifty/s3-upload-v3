@@ -5,11 +5,10 @@ import {
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
+import multer from 'multer';
+import multerS3 from 'multer-s3';
 import dotenv from 'dotenv';
-
 dotenv.config();
-
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_BUCKET_REGION;
 const accessKeyId = process.env.AWS_ACCESS_KEY;
@@ -23,16 +22,29 @@ const s3Client = new S3Client({
   },
 });
 
-export function uploadFile(fileBuffer, fileName, mimetype) {
-  const uploadParams = {
-    Bucket: bucketName,
-    Body: fileBuffer,
-    Key: fileName,
-    ContentType: mimetype,
-  };
+export const upload = multer({
+  storage: multerS3({
+    s3: s3Client,
+    bucket: 'bronifty-testbucket-12345',
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, `${Date.now().toString()}_${file.originalname}`);
+    },
+  }),
+});
 
-  return s3Client.send(new PutObjectCommand(uploadParams));
-}
+// export function uploadFile(fileBuffer, fileName, mimetype) {
+//   const uploadParams = {
+//     Bucket: bucketName,
+//     Body: fileBuffer,
+//     Key: fileName,
+//     ContentType: mimetype,
+//   };
+
+//   return s3Client.send(new PutObjectCommand(uploadParams));
+// }
 
 export function deleteFile(fileName) {
   const deleteParams = {
