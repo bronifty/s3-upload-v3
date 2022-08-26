@@ -23,7 +23,7 @@ const generateFileName = (bytes = 32) =>
 //   res.send(posts);
 // });
 
-app.post('/api/posts', upload.single('files'), async (req, res) => {
+app.post('/api/posts', upload.single('file'), async (req, res) => {
   console.log('in servers app.post route; req: ', { req });
 
   const file = req.file;

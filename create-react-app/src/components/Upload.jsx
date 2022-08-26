@@ -1,15 +1,14 @@
 import React from 'react';
 
 const Upload = () => {
-  const [files, setFiles] = React.useState();
-  const [name, setName] = React.useState('');
+  const [file, setFile] = React.useState();
+  const [caption, setCaption] = React.useState('');
 
   const submit = async (event) => {
     event.preventDefault();
-
     const formData = new FormData();
-    formData.append('files', files);
-    formData.append('name', name);
+    formData.append('file', file);
+    formData.append('caption', caption);
     await fetch('http://localhost:8080/api/posts', {
       method: 'POST',
       body: formData,
@@ -17,24 +16,24 @@ const Upload = () => {
   };
 
   return (
-    <>
-      <div className='container'>
-        <div>Upload</div>
-        <form onSubmit={submit}>
+    <div className='container'>
+      <form onSubmit={submit}>
+        <div className='input-group'>
+          <input onChange={(e) => setFile(e.target.files[0])} type='file' />
+        </div>
+        <div className='input-group'>
           <input
-            onChange={(e) => setFiles(e.target.files[0])}
-            type='file'
-          ></input>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
             type='text'
             placeholder='Caption'
-          ></input>
-          <button type='submit'>Submit</button>
-        </form>
-      </div>
-    </>
+          />
+        </div>
+        <button className='submit-btn' type='submit'>
+          Submit
+        </button>
+      </form>
+    </div>
   );
 };
 
