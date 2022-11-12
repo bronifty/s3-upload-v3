@@ -13,7 +13,8 @@ const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_BUCKET_REGION;
 const accessKeyId = process.env.AWS_ACCESS_KEY;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-
+const bucket = process.env.AWS_BUCKET_NAME;
+console.log(accessKeyId);
 const s3Client = new S3Client({
   region,
   credentials: {
@@ -25,7 +26,7 @@ const s3Client = new S3Client({
 export const upload = multer({
   storage: multerS3({
     s3: s3Client,
-    bucket: 'bronifty-testbucket-12345',
+    bucket,
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
